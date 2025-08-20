@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "repartidores")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Repartidor {
     
     @Id
