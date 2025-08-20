@@ -1,27 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.ProyectoPedidos.Monitoreo_Pedidos.Model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-
 
 @Getter
 @Setter
@@ -39,6 +24,7 @@ public class Pedido {
 
     @ManyToOne
     @JoinColumn(name = "id_repartidor")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Repartidor repartidor;
 
     @Enumerated(EnumType.STRING)
@@ -51,23 +37,21 @@ public class Pedido {
     @Column(name = "fecha_entrega")
     private LocalDateTime fechaEntrega;
 
-  public enum EstadoPedido {
-    EN_CAMINO,
-    ENTREGADO,
-    NO_ENTREGADO,
-    DEMORADO;
+    public enum EstadoPedido {
+        EN_CAMINO,
+        ENTREGADO,
+        NO_ENTREGADO,
+        DEMORADO;
 
-    @JsonCreator
-    public static EstadoPedido fromValue(String value) {
-        return switch (value.toUpperCase()) {
-            case "EN_CAMINO" -> EN_CAMINO;
-            case "ENTREGADO" -> ENTREGADO;
-            case "NO_ENTREGADO" -> NO_ENTREGADO;
-            case "DEMORADO" -> DEMORADO;
-            default -> throw new IllegalArgumentException("EstadoPedido desconocido: " + value);
-        };
+        @JsonCreator
+        public static EstadoPedido fromValue(String value) {
+            return switch (value.toUpperCase()) {
+                case "EN_CAMINO" -> EN_CAMINO;
+                case "ENTREGADO" -> ENTREGADO;
+                case "NO_ENTREGADO" -> NO_ENTREGADO;
+                case "DEMORADO" -> DEMORADO;
+                default -> throw new IllegalArgumentException("EstadoPedido desconocido: " + value);
+            };
+        }
     }
 }
-
-}
-
