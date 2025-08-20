@@ -1,7 +1,7 @@
 package com.ProyectoPedidos.Monitoreo_Pedidos.Model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "pedidos")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Pedido {
 
     @Id
@@ -22,9 +23,8 @@ public class Pedido {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_repartidor")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Repartidor repartidor;
 
     @Enumerated(EnumType.STRING)
@@ -43,7 +43,7 @@ public class Pedido {
         NO_ENTREGADO,
         DEMORADO;
 
-        @JsonCreator
+        @JsonProperty
         public static EstadoPedido fromValue(String value) {
             return switch (value.toUpperCase()) {
                 case "EN_CAMINO" -> EN_CAMINO;
