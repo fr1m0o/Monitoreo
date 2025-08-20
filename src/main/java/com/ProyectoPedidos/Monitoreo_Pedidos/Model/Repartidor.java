@@ -29,6 +29,6 @@ public class Repartidor {
     private String email;
 
     @Column(name = "fecha_alta", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime fechaAlta;
-
+    private LocalDateTime fechaAlta = LocalDateTime.now(); // valor por defecto
 }
+
