@@ -1,32 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.ProyectoPedidos.Monitoreo_Pedidos.service;
-
-import com.ProyectoPedidos.Monitoreo_Pedidos.Model.Pedido;
-import com.ProyectoPedidos.Monitoreo_Pedidos.Repository.PedidoRepository;
-import java.time.LocalDateTime;
-
-import java.util.ArrayList;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-/**
- *
- * @author nicolas
- */
 @Service
 public class PedidoService {
-@Autowired
+    @Autowired
     PedidoRepository pedidoRepo;
 
- public ArrayList<Pedido> obtenerPedidos() {
-        return (ArrayList<Pedido>) pedidoRepo.findAll();
+    public ArrayList<Pedido> obtenerPedidos() {
+        ArrayList<Pedido> pedidos = (ArrayList<Pedido>) pedidoRepo.findAll();
+        // Inicializar campos por si vinieran null
+        for (Pedido p : pedidos) {
+            if (p.getEstado() == null) p.setEstado(Pedido.EstadoPedido.EN_CAMINO);
+            if (p.getFechaPedido() == null) p.setFechaPedido(LocalDateTime.now());
+        }
+        return pedidos;
     }
 
     public Pedido guardarPedido(Pedido pedido) {
+        if (pedido.getEstado() == null) pedido.setEstado(Pedido.EstadoPedido.EN_CAMINO);
+        if (pedido.getFechaPedido() == null) pedido.setFechaPedido(LocalDateTime.now());
         return pedidoRepo.save(pedido);
     }
 
@@ -34,27 +23,21 @@ public class PedidoService {
         return pedidoRepo.findById(id);
     }
 
-  public Pedido actualizarPedidoPorId(Pedido request, Long id) {
-    Pedido pedido = pedidoRepo.findById(id).orElse(null);
-    if (pedido == null) return null;
+    public Pedido actualizarPedidoPorId(Pedido request, Long id) {
+        Pedido pedido = pedidoRepo.findById(id).orElse(null);
+        if (pedido == null) return null;
 
-    pedido.setDescripcion(request.getDescripcion());
-    pedido.setEstado(request.getEstado());
-    pedido.setFechaPedido(request.getFechaPedido());
-    pedido.setFechaEntrega(request.getFechaEntrega());
+        pedido.setDescripcion(request.getDescripcion());
+        pedido.setEstado(request.getEstado() != null ? request.getEstado() : Pedido.EstadoPedido.EN_CAMINO);
+        pedido.setFechaPedido(request.getFechaPedido() != null ? request.getFechaPedido() : LocalDateTime.now());
+        pedido.setFechaEntrega(request.getFechaEntrega());
 
-    // Actualizar solo el nombre del repartidor si corresponde
-    if (pedido.getRepartidor() != null && request.getRepartidor() != null) {
-        pedido.getRepartidor().setNombre(request.getRepartidor().getNombre());
-        // Podés agregar más campos si querés permitir editar otros datos:
-        // pedido.getRepartidor().setTelefono(request.getRepartidor().getTelefono());
-        // pedido.getRepartidor().setEmail(request.getRepartidor().getEmail());
+        if (request.getRepartidor() != null) {
+            pedido.setRepartidor(request.getRepartidor());
+        }
+
+        return pedidoRepo.save(pedido);
     }
-
-    return pedidoRepo.save(pedido);
-}
-
-
 
     public boolean borrarPedido(Long id) {
         try {
@@ -64,8 +47,5 @@ public class PedidoService {
             return false;
         }
     }
-
-
-
-
 }
+
