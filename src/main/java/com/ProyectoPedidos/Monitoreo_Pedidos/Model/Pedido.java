@@ -23,7 +23,7 @@ public class Pedido {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) // cambiar a EAGER para que se cargue el repartidor
     @JoinColumn(name = "id_repartidor")
     private Repartidor repartidor;
 
@@ -43,18 +43,17 @@ public class Pedido {
         NO_ENTREGADO,
         DEMORADO;
 
-      @JsonCreator
-public static EstadoPedido fromValue(String value) {
-    if (value == null) return EN_CAMINO;
-
-    return switch (value.toUpperCase()) {
-        case "EN CAMINO", "EN_CAMINO" -> EN_CAMINO;
-        case "ENTREGADO" -> ENTREGADO;
-        case "NO ENTREGADO", "NO_ENTREGADO" -> NO_ENTREGADO;
-        case "DEMORADO" -> DEMORADO;
-        default -> throw new IllegalArgumentException("EstadoPedido desconocido: " + value);
-    };
-}
-
+        @JsonCreator
+        public static EstadoPedido fromValue(String value) {
+            if (value == null) return EN_CAMINO;
+            return switch (value.toUpperCase()) {
+                case "EN_CAMINO", "EN CAMINO" -> EN_CAMINO;
+                case "ENTREGADO" -> ENTREGADO;
+                case "NO_ENTREGADO", "NO ENTREGADO" -> NO_ENTREGADO;
+                case "DEMORADO" -> DEMORADO;
+                default -> EN_CAMINO; // valor por defecto para evitar errores de deserialización
+            };
+        }
     }
 }
+
