@@ -15,34 +15,32 @@ public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
 
-    // GET - Listar todos los pedidos
     @GetMapping
     public List<Pedido> obtenerPedidos() {
         return pedidoService.obtenerPedidos();
     }
 
-    // POST - Guardar pedido
     @PostMapping
     public Pedido guardarPedido(@RequestBody Pedido pedido) {
+        // Si estado viene null, asignar valor por defecto
+        if (pedido.getEstado() == null) pedido.setEstado(Pedido.EstadoPedido.EN_CAMINO);
         return pedidoService.guardarPedido(pedido);
     }
 
-    // GET por ID
     @GetMapping("/{id}")
     public Optional<Pedido> obtenerPedidoPorId(@PathVariable Long id) {
         return pedidoService.getById(id);
     }
 
-    // PUT - Actualizar pedido
     @PutMapping("/{id}")
     public Pedido actualizarPedido(@RequestBody Pedido pedido, @PathVariable Long id) {
         return pedidoService.actualizarPedidoPorId(pedido, id);
     }
 
-    // DELETE
     @DeleteMapping("/{id}")
     public String eliminarPedido(@PathVariable Long id) {
         boolean ok = pedidoService.borrarPedido(id);
         return ok ? "Pedido con ID " + id + " eliminado." : "Error al eliminar el pedido.";
     }
 }
+
