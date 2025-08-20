@@ -1,33 +1,28 @@
-
 package com.ProyectoPedidos.Monitoreo_Pedidos.service;
 
-import com.ProyectoPedidos.Monitoreo_Pedidos.Model.Repartidor;
-import com.ProyectoPedidos.Monitoreo_Pedidos.Repository.RepartidorRepository;
+import com.ProyectoPedidos.Monitoreo_Pedidos.Model.Pedido;
+import com.ProyectoPedidos.Monitoreo_Pedidos.Repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-
 @Service
 public class PedidoService {
+
     @Autowired
-    PedidoRepository pedidoRepo;
+    private PedidoRepository pedidoRepo;
 
     public ArrayList<Pedido> obtenerPedidos() {
-        ArrayList<Pedido> pedidos = (ArrayList<Pedido>) pedidoRepo.findAll();
-        // Inicializar campos por si vinieran null
-        for (Pedido p : pedidos) {
-            if (p.getEstado() == null) p.setEstado(Pedido.EstadoPedido.EN_CAMINO);
-            if (p.getFechaPedido() == null) p.setFechaPedido(LocalDateTime.now());
-        }
-        return pedidos;
+        return (ArrayList<Pedido>) pedidoRepo.findAll();
     }
 
     public Pedido guardarPedido(Pedido pedido) {
-        if (pedido.getEstado() == null) pedido.setEstado(Pedido.EstadoPedido.EN_CAMINO);
-        if (pedido.getFechaPedido() == null) pedido.setFechaPedido(LocalDateTime.now());
+        // Verifica que haya repartidor asignado y que exista
+        if (pedido.getRepartidor() != null && pedido.getRepartidor().getId() == null) {
+            pedido.setRepartidor(null); // Evita error si repartidor no existe
+        }
         return pedidoRepo.save(pedido);
     }
 
@@ -40,8 +35,8 @@ public class PedidoService {
         if (pedido == null) return null;
 
         pedido.setDescripcion(request.getDescripcion());
-        pedido.setEstado(request.getEstado() != null ? request.getEstado() : Pedido.EstadoPedido.EN_CAMINO);
-        pedido.setFechaPedido(request.getFechaPedido() != null ? request.getFechaPedido() : LocalDateTime.now());
+        pedido.setEstado(request.getEstado());
+        pedido.setFechaPedido(request.getFechaPedido());
         pedido.setFechaEntrega(request.getFechaEntrega());
 
         if (request.getRepartidor() != null) {
@@ -60,5 +55,3 @@ public class PedidoService {
         }
     }
 }
-
-
