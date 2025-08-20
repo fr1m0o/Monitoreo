@@ -43,8 +43,11 @@ public class Pedido {
         NO_ENTREGADO,
         DEMORADO;
 
-        @JsonProperty
+        @JsonCreator
         public static EstadoPedido fromValue(String value) {
+            if (value == null) {
+                return EN_CAMINO; // valor por defecto
+            }
             return switch (value.toUpperCase()) {
                 case "EN_CAMINO" -> EN_CAMINO;
                 case "ENTREGADO" -> ENTREGADO;
