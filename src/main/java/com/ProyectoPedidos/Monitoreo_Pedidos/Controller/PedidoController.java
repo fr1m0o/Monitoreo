@@ -1,12 +1,3 @@
-package com.ProyectoPedidos.Monitoreo_Pedidos.Controller;
-
-import com.ProyectoPedidos.Monitoreo_Pedidos.Model.Pedido;
-import com.ProyectoPedidos.Monitoreo_Pedidos.service.PedidoService;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 @RestController
 @RequestMapping("/pedido")
 @CrossOrigin(origins = "*")
@@ -17,30 +8,60 @@ public class PedidoController {
 
     @GetMapping
     public List<Pedido> obtenerPedidos() {
-        return pedidoService.obtenerPedidos();
+        try {
+            return pedidoService.obtenerPedidos();
+        } catch (Exception e) {
+            e.printStackTrace(); // Muestra el stacktrace completo en la consola
+            throw e; // para que el cliente reciba 500
+        }
     }
 
     @PostMapping
     public Pedido guardarPedido(@RequestBody Pedido pedido) {
-        // Si estado viene null, asignar valor por defecto
         if (pedido.getEstado() == null) pedido.setEstado(Pedido.EstadoPedido.EN_CAMINO);
-        return pedidoService.guardarPedido(pedido);
+        try {
+            return pedidoService.guardarPedido(pedido);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @GetMapping("/{id}")
     public Optional<Pedido> obtenerPedidoPorId(@PathVariable Long id) {
-        return pedidoService.getById(id);
+        try {
+            return pedidoService.getById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @PutMapping("/{id}")
     public Pedido actualizarPedido(@RequestBody Pedido pedido, @PathVariable Long id) {
-        return pedidoService.actualizarPedidoPorId(pedido, id);
+        try {
+            return pedidoService.actualizarPedidoPorId(pedido, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @DeleteMapping("/{id}")
     public String eliminarPedido(@PathVariable Long id) {
-        boolean ok = pedidoService.borrarPedido(id);
-        return ok ? "Pedido con ID " + id + " eliminado." : "Error al eliminar el pedido.";
+        try {
+            boolean ok = pedidoService.borrarPedido(id);
+            return ok ? "Pedido con ID " + id + " eliminado." : "Error al eliminar el pedido.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    // Manejo global de excepciones dentro del mismo controller
+    @ExceptionHandler(Exception.class)
+    public String manejarExcepcion(Exception ex) {
+        ex.printStackTrace(); // Aquí se ve todo el stacktrace en la consola del servidor
+        return "Error interno del servidor: " + ex.getMessage();
     }
 }
-
