@@ -43,18 +43,18 @@ public class Pedido {
         NO_ENTREGADO,
         DEMORADO;
 
-        @JsonCreator
-        public static EstadoPedido fromValue(String value) {
-            if (value == null) {
-                return EN_CAMINO; // valor por defecto
-            }
-            return switch (value.toUpperCase()) {
-                case "EN_CAMINO" -> EN_CAMINO;
-                case "ENTREGADO" -> ENTREGADO;
-                case "NO_ENTREGADO" -> NO_ENTREGADO;
-                case "DEMORADO" -> DEMORADO;
-                default -> throw new IllegalArgumentException("EstadoPedido desconocido: " + value);
-            };
-        }
+      @JsonCreator
+public static EstadoPedido fromValue(String value) {
+    if (value == null) return EN_CAMINO;
+
+    return switch (value.toUpperCase()) {
+        case "EN CAMINO", "EN_CAMINO" -> EN_CAMINO;
+        case "ENTREGADO" -> ENTREGADO;
+        case "NO ENTREGADO", "NO_ENTREGADO" -> NO_ENTREGADO;
+        case "DEMORADO" -> DEMORADO;
+        default -> throw new IllegalArgumentException("EstadoPedido desconocido: " + value);
+    };
+}
+
     }
 }
