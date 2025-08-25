@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // <- este falta
 
 @Data
 @Entity
@@ -31,4 +32,3 @@ public class Repartidor {
     @Column(name = "fecha_alta", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime fechaAlta = LocalDateTime.now(); // valor por defecto
 }
-
