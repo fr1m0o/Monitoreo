@@ -49,10 +49,15 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Jackson Annotations (para JsonIgnoreProperties y JsonCreator) -->
+        <!-- Jackson completo (anotaciones y databind) -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
+            <version>2.15.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
             <version>2.15.2</version>
         </dependency>
 
